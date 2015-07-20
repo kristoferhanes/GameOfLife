@@ -13,6 +13,10 @@
 		5EA3BBEC1B5D050F008F602C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5EA3BBEB1B5D050F008F602C /* Images.xcassets */; };
 		5EA3BBEF1B5D050F008F602C /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5EA3BBED1B5D050F008F602C /* LaunchScreen.xib */; };
 		5EA3BBFB1B5D050F008F602C /* GameOfLifeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA3BBFA1B5D050F008F602C /* GameOfLifeTests.swift */; };
+		5EA3BC091B5D0572008F602C /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA3BC081B5D0572008F602C /* Cell.swift */; };
+		5EA3BC0B1B5D059C008F602C /* CellBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA3BC0A1B5D059C008F602C /* CellBoard.swift */; };
+		5EA3BC0D1B5D05F2008F602C /* CellBoardRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA3BC0C1B5D05F2008F602C /* CellBoardRenderer.swift */; };
+		5EA3BC0F1B5D06FA008F602C /* DrawToUIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA3BC0E1B5D06FA008F602C /* DrawToUIImage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +40,10 @@
 		5EA3BBF41B5D050F008F602C /* GameOfLifeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GameOfLifeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5EA3BBF91B5D050F008F602C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5EA3BBFA1B5D050F008F602C /* GameOfLifeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOfLifeTests.swift; sourceTree = "<group>"; };
+		5EA3BC081B5D0572008F602C /* Cell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
+		5EA3BC0A1B5D059C008F602C /* CellBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellBoard.swift; sourceTree = "<group>"; };
+		5EA3BC0C1B5D05F2008F602C /* CellBoardRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellBoardRenderer.swift; sourceTree = "<group>"; };
+		5EA3BC0E1B5D06FA008F602C /* DrawToUIImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawToUIImage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +88,10 @@
 				5EA3BBE41B5D050F008F602C /* AppDelegate.swift */,
 				5EA3BBE61B5D050F008F602C /* ViewController.swift */,
 				5EA3BBE81B5D050F008F602C /* Main.storyboard */,
+				5EA3BC081B5D0572008F602C /* Cell.swift */,
+				5EA3BC0A1B5D059C008F602C /* CellBoard.swift */,
+				5EA3BC0C1B5D05F2008F602C /* CellBoardRenderer.swift */,
+				5EA3BC0E1B5D06FA008F602C /* DrawToUIImage.swift */,
 				5EA3BBEB1B5D050F008F602C /* Images.xcassets */,
 				5EA3BBED1B5D050F008F602C /* LaunchScreen.xib */,
 				5EA3BBE21B5D050F008F602C /* Supporting Files */,
@@ -214,6 +226,10 @@
 			files = (
 				5EA3BBE71B5D050F008F602C /* ViewController.swift in Sources */,
 				5EA3BBE51B5D050F008F602C /* AppDelegate.swift in Sources */,
+				5EA3BC0F1B5D06FA008F602C /* DrawToUIImage.swift in Sources */,
+				5EA3BC0B1B5D059C008F602C /* CellBoard.swift in Sources */,
+				5EA3BC0D1B5D05F2008F602C /* CellBoardRenderer.swift in Sources */,
+				5EA3BC091B5D0572008F602C /* Cell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,6 +361,8 @@
 				INFOPLIST_FILE = GameOfLife/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Ounchecked";
+				SWIFT_WHOLE_MODULE_OPTIMIZATION = YES;
 			};
 			name = Debug;
 		};
@@ -355,6 +373,8 @@
 				INFOPLIST_FILE = GameOfLife/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Ounchecked";
+				SWIFT_WHOLE_MODULE_OPTIMIZATION = YES;
 			};
 			name = Release;
 		};
