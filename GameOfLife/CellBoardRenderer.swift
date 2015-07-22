@@ -17,27 +17,29 @@ struct CellBoardRenderer {
 extension CellBoardRenderer {
 
   func render(cells: CellBoard) -> UIImage {
-    return drawToUIImage(width: width * cellSize, height: height * cellSize) { context in
+    return drawToUIImage(
+      width: width * cellSize,
+      height: height * cellSize) { context in
 
-      UIColor.whiteColor().set()
-      CGContextFillRect(context,
-        CGRect(
-          x: 0,
-          y: 0,
-          width: self.width * self.cellSize,
-          height: self.height * self.cellSize))
-
-      UIColor.blackColor().set()
-      for cell in cells.livingCells {
+        UIColor.whiteColor().set()
         CGContextFillRect(context,
           CGRect(
-            x: CGFloat(cell.x) * self.cellSize,
-            y: CGFloat(cell.y) * self.cellSize,
-            width: self.cellSize,
-            height: self.cellSize))
-      }
+            x: 0,
+            y: 0,
+            width: self.width * self.cellSize,
+            height: self.height * self.cellSize))
 
+        UIColor.blackColor().set()
+        for cell in cells.livingCells {
+          CGContextFillRect(context,
+            CGRect(
+              x: CGFloat(cell.x) * self.cellSize,
+              y: CGFloat(cell.y) * self.cellSize,
+              width: self.cellSize,
+              height: self.cellSize))
+        }
+        
     }
   }
-
+  
 }

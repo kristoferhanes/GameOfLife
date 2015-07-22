@@ -28,7 +28,8 @@ class ViewController: UIViewController {
 
   @IBAction func startStop(startStopButton: UIBarButtonItem) {
     startStopButton.title = startStopButton.toggleTitle
-    timer = NSTimer.scheduleTimer(timer, turnOn: startStopButton.title == "Start")
+    timer = NSTimer.scheduleTimer(timer,
+      turnOn: startStopButton.title == "Start")
   }
 
   @IBAction func tapGestureHandler(gesture: UITapGestureRecognizer) {

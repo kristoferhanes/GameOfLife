@@ -28,7 +28,8 @@ extension CellBoard {
     var newCells = Cells()
     for cell in cellsToCheck {
       let livingNeighborCount = livingCells.intersect(cell.neighbors).count
-      if livingNeighborCount == 3 || (livingNeighborCount == 2 && livingCells.contains(cell)) {
+      if livingNeighborCount == 3
+        || (livingNeighborCount == 2 && livingCells.contains(cell)) {
         newCells.insert(cell)
       }
     }

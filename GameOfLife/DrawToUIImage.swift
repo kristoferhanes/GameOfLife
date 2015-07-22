@@ -8,18 +8,21 @@
 
 import UIKit
 
-func drawToUIImage(#width: CGFloat, #height: CGFloat, draw: CGContext->()) -> UIImage {
-  UIGraphicsBeginImageContextWithOptions(
-    CGSize(width: width, height: height),
-    true,
-    0.0)
-  let context = UIGraphicsGetCurrentContext()
-  UIGraphicsPushContext(context)
+func drawToUIImage(
+  #width: CGFloat,
+  #height: CGFloat,
+  draw: CGContext->()) -> UIImage {
+    UIGraphicsBeginImageContextWithOptions(
+      CGSize(width: width, height: height),
+      true,
+      0.0)
+    let context = UIGraphicsGetCurrentContext()
+    UIGraphicsPushContext(context)
 
-  draw(context)
+    draw(context)
 
-  UIGraphicsPopContext()
-  let result = UIGraphicsGetImageFromCurrentImageContext()
-  UIGraphicsEndImageContext()
-  return result
+    UIGraphicsPopContext()
+    let result = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+    return result
 }
