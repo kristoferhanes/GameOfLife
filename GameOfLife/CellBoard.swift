@@ -16,19 +16,20 @@ extension CellBoard {
   init() { livingCells = Set<Cell>() }
 
   func addCell(cell: Cell) -> CellBoard {
-    var cells = livingCells
-    cells.insert(cell)
-    return CellBoard(livingCells: cells)
+    return CellBoard(livingCells: livingCells.union([cell]))
   }
 
   func next() -> CellBoard {
-    let potantialCells = livingCells.flatMap { $0.neighbors.union([$0]) }
-    let result = potantialCells.filter { cell in
-      cell.shouldLive(
-        isAlive: self.livingCells.contains(cell),
-        neightborCount: self.livingCells.intersect(cell.neighbors).count)
+    let neighbors = livingCells.flatMap { $0.neighbors }
+    let deadNeighbors = neighbors.subtract(livingCells)
+    let livingNeighbors = livingCells.subtract(deadNeighbors)
+    let newborns = deadNeighbors.filter {
+      $0.neighbors.intersect(livingNeighbors).count == 3
     }
-    return CellBoard(livingCells: result)
+    let survivors = livingNeighbors.filter {
+      let livingNeighborCount = $0.neighbors.intersect(livingNeighbors).count
+      return livingNeighborCount == 2 || livingNeighborCount == 3
+    }
+    return CellBoard(livingCells: newborns.union(survivors))
   }
-
 }

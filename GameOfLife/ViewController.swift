@@ -10,7 +10,7 @@ import UIKit
 
 private struct Constants {
   static let defaultCellSize: CGFloat = 10
-  static let FrameLength = 1.0 / 5.0
+  static let FrameLength = 1.0 / 30.0
   static let ButtonStopTitle = "Stop"
   static let ButtonStartTitle = "Start"
 }

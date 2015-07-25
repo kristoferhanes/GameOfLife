@@ -21,10 +21,6 @@ extension Cell: Hashable {
 }
 
 extension Cell {
-  func shouldLive(#isAlive: Bool, neightborCount: Int) -> Bool {
-    return neightborCount == 3 || (isAlive && neightborCount == 2)
-  }
-
   var neighbors: Set<Cell> {
     struct Memo { static var neighbors = [Cell:Set<Cell>]() }
 
