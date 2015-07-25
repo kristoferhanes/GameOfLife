@@ -8,40 +8,27 @@
 
 import Foundation
 
-typealias Cells = Set<Cell>
-
 struct CellBoard {
-  let livingCells: Cells
+  let livingCells: Set<Cell>
 }
 
 extension CellBoard {
-
-  init() {
-    livingCells = Cells()
-  }
+  init() { livingCells = Set<Cell>() }
 
   func addCell(cell: Cell) -> CellBoard {
-    return CellBoard(livingCells: livingCells.union([cell]))
+    var cells = livingCells
+    cells.insert(cell)
+    return CellBoard(livingCells: cells)
   }
 
   func next() -> CellBoard {
-    var newCells = Cells()
-    for cell in cellsToCheck {
-      let livingNeighborCount = livingCells.intersect(cell.neighbors).count
-      if livingNeighborCount == 3
-        || (livingNeighborCount == 2 && livingCells.contains(cell)) {
-        newCells.insert(cell)
-      }
+    let potantialCells = livingCells.flatMap { $0.neighbors.union([$0]) }
+    let result = potantialCells.filter { cell in
+      cell.shouldLive(
+        isAlive: self.livingCells.contains(cell),
+        neightborCount: self.livingCells.intersect(cell.neighbors).count)
     }
-    return CellBoard(livingCells: newCells)
-  }
-
-  private var cellsToCheck: Cells {
-    var result = livingCells
-    for cell in livingCells {
-      result.unionInPlace(cell.neighbors)
-    }
-    return result
+    return CellBoard(livingCells: result)
   }
 
 }

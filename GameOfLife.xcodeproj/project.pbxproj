@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5E2770451B5FFB7200088786 /* Set-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E2770441B5FFB7200088786 /* Set-Extension.swift */; };
+		5E702B741B631C0300C86002 /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E702B731B631C0300C86002 /* Future.swift */; };
 		5EA3BBE51B5D050F008F602C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA3BBE41B5D050F008F602C /* AppDelegate.swift */; };
 		5EA3BBE71B5D050F008F602C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA3BBE61B5D050F008F602C /* ViewController.swift */; };
 		5EA3BBEA1B5D050F008F602C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5EA3BBE81B5D050F008F602C /* Main.storyboard */; };
@@ -30,6 +32,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5E2770441B5FFB7200088786 /* Set-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Set-Extension.swift"; sourceTree = "<group>"; };
+		5E702B731B631C0300C86002 /* Future.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Future.swift; sourceTree = "<group>"; };
 		5EA3BBDF1B5D050E008F602C /* GameOfLife.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameOfLife.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5EA3BBE31B5D050F008F602C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5EA3BBE41B5D050F008F602C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -92,6 +96,8 @@
 				5EA3BC0A1B5D059C008F602C /* CellBoard.swift */,
 				5EA3BC0C1B5D05F2008F602C /* CellBoardRenderer.swift */,
 				5EA3BC0E1B5D06FA008F602C /* DrawToUIImage.swift */,
+				5E2770441B5FFB7200088786 /* Set-Extension.swift */,
+				5E702B731B631C0300C86002 /* Future.swift */,
 				5EA3BBEB1B5D050F008F602C /* Images.xcassets */,
 				5EA3BBED1B5D050F008F602C /* LaunchScreen.xib */,
 				5EA3BBE21B5D050F008F602C /* Supporting Files */,
@@ -226,9 +232,11 @@
 			files = (
 				5EA3BBE71B5D050F008F602C /* ViewController.swift in Sources */,
 				5EA3BBE51B5D050F008F602C /* AppDelegate.swift in Sources */,
+				5E702B741B631C0300C86002 /* Future.swift in Sources */,
 				5EA3BC0F1B5D06FA008F602C /* DrawToUIImage.swift in Sources */,
 				5EA3BC0B1B5D059C008F602C /* CellBoard.swift in Sources */,
 				5EA3BC0D1B5D05F2008F602C /* CellBoardRenderer.swift in Sources */,
+				5E2770451B5FFB7200088786 /* Set-Extension.swift in Sources */,
 				5EA3BC091B5D0572008F602C /* Cell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -431,6 +439,7 @@
 				5EA3BC001B5D050F008F602C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5EA3BC011B5D050F008F602C /* Build configuration list for PBXNativeTarget "GameOfLifeTests" */ = {
 			isa = XCConfigurationList;
@@ -439,6 +448,7 @@
 				5EA3BC031B5D050F008F602C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

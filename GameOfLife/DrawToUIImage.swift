@@ -8,14 +8,9 @@
 
 import UIKit
 
-func drawToUIImage(
-  #width: CGFloat,
-  #height: CGFloat,
-  draw: CGContext->()) -> UIImage {
-    UIGraphicsBeginImageContextWithOptions(
-      CGSize(width: width, height: height),
-      true,
-      0.0)
+func drawToUIImage(size: CGSize, draw: CGContext->()) -> UIImage {
+    UIGraphicsBeginImageContextWithOptions(size, true, 0.0)
+    
     let context = UIGraphicsGetCurrentContext()
     UIGraphicsPushContext(context)
 

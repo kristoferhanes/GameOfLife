@@ -16,13 +16,20 @@ func == (lhs: Cell, rhs: Cell) -> Bool {
 
 extension Cell: Hashable {
   var hashValue: Int {
-    return (x.hashValue << 16) ^ y.hashValue
+    return (x << 16) ^ y
   }
 }
 
 extension Cell {
-  var neighbors: Cells {
-    return Cells([
+  func shouldLive(#isAlive: Bool, neightborCount: Int) -> Bool {
+    return neightborCount == 3 || (isAlive && neightborCount == 2)
+  }
+
+  var neighbors: Set<Cell> {
+    struct Memo { static var neighbors = [Cell:Set<Cell>]() }
+
+    if let n = Memo.neighbors[self] { return n }
+    let result = Set([
       Cell(x: x-1, y: y-1),
       Cell(x: x-1, y: y  ),
       Cell(x: x-1, y: y+1),
@@ -30,7 +37,8 @@ extension Cell {
       Cell(x: x,   y: y+1),
       Cell(x: x+1, y: y-1),
       Cell(x: x+1, y: y  ),
-      Cell(x: x+1, y: y+1)
-      ])
+      Cell(x: x+1, y: y+1)])
+    Memo.neighbors[self] = result
+    return result
   }
 }

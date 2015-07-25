@@ -9,37 +9,30 @@
 import UIKit
 
 struct CellBoardRenderer {
-  let width: CGFloat
-  let height: CGFloat
+  let bounds: CGRect
   let cellSize: CGFloat
 }
 
 extension CellBoardRenderer {
-
-  func render(cells: CellBoard) -> UIImage {
-    return drawToUIImage(
-      width: width * cellSize,
-      height: height * cellSize) { context in
-
-        UIColor.whiteColor().set()
-        CGContextFillRect(context,
-          CGRect(
-            x: 0,
-            y: 0,
-            width: self.width * self.cellSize,
-            height: self.height * self.cellSize))
-
-        UIColor.blackColor().set()
-        for cell in cells.livingCells {
-          CGContextFillRect(context,
-            CGRect(
-              x: CGFloat(cell.x) * self.cellSize,
-              y: CGFloat(cell.y) * self.cellSize,
-              width: self.cellSize,
-              height: self.cellSize))
-        }
-        
+  func render(cells: Set<Cell>) -> UIImage {
+    return drawToUIImage(bounds.size) { context in
+        self.drawBackground(context)
+        self.drawCells(cells, context: context)
     }
   }
-  
+
+  func drawBackground(context: CGContext) {
+    UIColor.whiteColor().set()
+    CGContextFillRect(context, CGRect(origin: CGPoint(x: 0, y: 0), size: bounds.size))
+  }
+
+  func drawCells(cells: Set<Cell>, context: CGContext) {
+    UIColor.darkGrayColor().set()
+    for cell in cells {
+      let x = CGFloat(cell.x) * cellSize + bounds.origin.x
+      let y = CGFloat(cell.y) * cellSize + bounds.origin.y
+      CGContextFillRect(context,
+        CGRect(x: x, y: y, width: cellSize, height: cellSize))
+    }
+  }
 }

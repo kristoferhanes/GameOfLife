@@ -9,73 +9,131 @@
 import UIKit
 
 private struct Constants {
-  static let CellSize: CGFloat = 10
-  static let FrameRate = 1.0/10.0
+  static let defaultCellSize: CGFloat = 10
+  static let FrameLength = 1.0 / 5.0
+  static let ButtonStopTitle = "Stop"
+  static let ButtonStartTitle = "Start"
 }
 
 class ViewController: UIViewController {
 
   @IBOutlet weak var imageView: UIImageView!
+  @IBOutlet weak var startStopButton: UIBarButtonItem!
 
   var cellBoard = CellBoard()
-  var renderer: CellBoardRenderer!
+  var renderer = CellBoardRenderer(
+    bounds: CGRect(),
+    cellSize: Constants.defaultCellSize)
 
   var timer: NSTimer?
 
-  override func viewDidLoad() {
-    renderer = initCellBoardRenderer()
+  override func viewWillLayoutSubviews() {
+    super.viewWillLayoutSubviews()
+    renderer = CellBoardRenderer(
+      bounds: CGRect(origin: CGPoint(x: 0, y: 0), size: imageView.bounds.size),
+      cellSize: renderer.cellSize)
+  }
+
+  @IBAction func clearCells(_: UIBarButtonItem) {
+    cellBoard = CellBoard()
+    imageView.image = renderer.render(cellBoard.livingCells)
   }
 
   @IBAction func startStop(startStopButton: UIBarButtonItem) {
     startStopButton.title = startStopButton.toggleTitle
-    timer = NSTimer.scheduleTimer(timer,
-      turnOn: startStopButton.title == "Start")
+    if startStopButton.title == Constants.ButtonStopTitle { turnOnTimer() }
+    else { turnOffTimer() }
   }
 
   @IBAction func tapGestureHandler(gesture: UITapGestureRecognizer) {
-
+    switch gesture.state {
+    case .Ended:
+      let touchPoint = gesture.locationInView(imageView) - renderer.bounds.origin
+      let cell = Cell(
+        x: Int(touchPoint.x / renderer.cellSize),
+        y: Int(touchPoint.y / renderer.cellSize))
+      cellBoard = cellBoard.addCell(cell)
+      imageView.image = renderer.render(cellBoard.livingCells)
+    default: break
+    }
   }
 
   @IBAction func panGestureHandler(gesture: UIPanGestureRecognizer) {
+    switch gesture.state {
+    case .Changed:
+      let touchPoint = gesture.locationInView(imageView) - renderer.bounds.origin
+      let cell = Cell(
+        x: Int(touchPoint.x / renderer.cellSize),
+        y: Int(touchPoint.y / renderer.cellSize))
+      cellBoard = cellBoard.addCell(cell)
+      imageView.image = renderer.render(cellBoard.livingCells)
+    default: break
+    }
 
   }
 
-  func drawNextFrame(timer: NSTimer) {
-    imageView.image = renderer.render(cellBoard)
+  @IBAction func pinchGestureHandler(gesture: UIPinchGestureRecognizer) {
+    switch gesture.state {
+    case .Changed:
+      let location = gesture.locationInView(imageView)
+      let scale = gesture.scale
+      let newCellSize = renderer.cellSize * scale
+      let x = (renderer.bounds.origin.x - location.x) * scale + location.x
+      let y = (renderer.bounds.origin.y - location.y) * scale + location.y
+      let newBounds = CGRect(
+        origin: CGPoint(x: x, y: y),
+        size: imageView.bounds.size)
+      renderer = CellBoardRenderer(bounds: newBounds, cellSize: newCellSize)
+      imageView.image = renderer.render(cellBoard.livingCells)
+      gesture.scale = 1
+    case .Ended:
+      gesture.scale = 1
+    default: break
+    }
   }
 
-  private func initCellBoardRenderer() -> CellBoardRenderer {
-    return CellBoardRenderer(
-      width: imageView.bounds.width / Constants.CellSize,
-      height: imageView.bounds.height / Constants.CellSize,
-      cellSize: Constants.CellSize)
+
+  func drawNextFrame(_: NSTimer) {
+    turnOffTimer()
+    Future { completion in
+      completion(self.cellBoard.next())
+      }.start { newCellBoard in
+        self.cellBoard = newCellBoard
+        self.imageView.image = self.renderer.render(self.cellBoard.livingCells)
+        if self.startStopButton.title == Constants.ButtonStopTitle {
+          self.turnOnTimer()
+        }
+    }
   }
 
+  private func turnOnTimer() {
+    timer?.invalidate()
+    timer = NSTimer.scheduledTimerWithTimeInterval(Constants.FrameLength,
+      target: self,
+      selector: Selector("drawNextFrame:"),
+      userInfo: nil,
+      repeats: true)
+  }
+
+  private func turnOffTimer() {
+    timer?.invalidate()
+    timer = nil
+  }
 }
 
 
 extension UIBarButtonItem {
   private var toggleTitle: String {
     switch title ?? "" {
-    case "Start": return "Stop"
-    case "Stop": return "Start"
+    case Constants.ButtonStartTitle: return Constants.ButtonStopTitle
+    case Constants.ButtonStopTitle: return Constants.ButtonStartTitle
     default: fatalError("Invalid button title")
     }
   }
 }
 
-extension NSTimer {
-  private static func scheduleTimer(timer: NSTimer?, turnOn: Bool) -> NSTimer? {
-    if turnOn {
-      timer?.invalidate()
-      return NSTimer.scheduledTimerWithTimeInterval(Constants.FrameRate,
-        target: self,
-        selector: Selector("drawNextFrame"),
-        userInfo: nil,
-        repeats: true)
-    } else {
-      timer?.invalidate()
-      return nil
-    }
-  }
+private func - (lhs: CGPoint, rhs:CGPoint) -> CGPoint {
+  let x = lhs.x - rhs.x
+  let y = lhs.y - rhs.y
+  return CGPoint(x: x, y: y)
 }
