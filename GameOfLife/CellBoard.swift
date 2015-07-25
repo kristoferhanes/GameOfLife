@@ -15,11 +15,11 @@ struct CellBoard {
 extension CellBoard {
   init() { livingCells = Set<Cell>() }
 
-  mutating func addCell(cell: Cell) -> CellBoard {
+  func addCell(cell: Cell) -> CellBoard {
     return CellBoard(livingCells: livingCells.union([cell]))
   }
 
-  mutating func toggleCell(cell: Cell) -> CellBoard {
+  func toggleCell(cell: Cell) -> CellBoard {
     return CellBoard(livingCells: livingCells.exclusiveOr([cell]))
   }
 
