@@ -23,8 +23,7 @@ extension Cell: Hashable {
 extension Cell {
   var neighbors: Set<Cell> {
     struct Memo { static var neighbors = [Cell:Set<Cell>]() }
-
-    if let n = Memo.neighbors[self] { return n }
+    if let ns = Memo.neighbors[self] { return ns }
     let result = Set([
       Cell(x: x-1, y: y-1),
       Cell(x: x-1, y: y  ),

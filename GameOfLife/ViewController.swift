@@ -27,6 +27,12 @@ class ViewController: UIViewController {
 
   var timer: NSTimer?
 
+  var lastFrameTimeStamp = NSDate.timestamp
+
+  var isRunning: Bool {
+    return startStopButton.title == Constants.ButtonStopTitle
+  }
+
   override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     renderer = CellBoardRenderer(
@@ -35,6 +41,8 @@ class ViewController: UIViewController {
   }
 
   @IBAction func clearCells(_: UIBarButtonItem) {
+    turnOffTimer()
+    startStopButton.title = Constants.ButtonStartTitle
     cellBoard = CellBoard()
     imageView.image = renderer.render(cellBoard.livingCells)
   }
@@ -48,11 +56,11 @@ class ViewController: UIViewController {
   @IBAction func tapGestureHandler(gesture: UITapGestureRecognizer) {
     switch gesture.state {
     case .Ended:
-      let touchPoint = gesture.locationInView(imageView) - renderer.bounds.origin
+      let touchPoint = gesture.locationInView(gesture.view) - renderer.bounds.origin
       let cell = Cell(
         x: Int(touchPoint.x / renderer.cellSize),
         y: Int(touchPoint.y / renderer.cellSize))
-      cellBoard = cellBoard.addCell(cell)
+      cellBoard = cellBoard.toggleCell(cell)
       imageView.image = renderer.render(cellBoard.livingCells)
     default: break
     }
@@ -61,21 +69,24 @@ class ViewController: UIViewController {
   @IBAction func panGestureHandler(gesture: UIPanGestureRecognizer) {
     switch gesture.state {
     case .Changed:
-      let touchPoint = gesture.locationInView(imageView) - renderer.bounds.origin
+      let touchPoint = gesture.locationInView(gesture.view) - renderer.bounds.origin
       let cell = Cell(
         x: Int(touchPoint.x / renderer.cellSize),
         y: Int(touchPoint.y / renderer.cellSize))
       cellBoard = cellBoard.addCell(cell)
-      imageView.image = renderer.render(cellBoard.livingCells)
+      let timeSinceLastFrame = NSDate.timestamp - lastFrameTimeStamp
+      if timeSinceLastFrame > Constants.FrameLength {
+        imageView.image = renderer.render(cellBoard.livingCells)
+        lastFrameTimeStamp = NSDate.timeIntervalSinceReferenceDate()
+      }
     default: break
     }
-
   }
 
   @IBAction func pinchGestureHandler(gesture: UIPinchGestureRecognizer) {
     switch gesture.state {
     case .Changed:
-      let location = gesture.locationInView(imageView)
+      let location = gesture.locationInView(gesture.view)
       let scale = gesture.scale
       let newCellSize = renderer.cellSize * scale
       let x = (renderer.bounds.origin.x - location.x) * scale + location.x
@@ -84,7 +95,11 @@ class ViewController: UIViewController {
         origin: CGPoint(x: x, y: y),
         size: imageView.bounds.size)
       renderer = CellBoardRenderer(bounds: newBounds, cellSize: newCellSize)
-      imageView.image = renderer.render(cellBoard.livingCells)
+      let timeSinceLastFrame = NSDate.timestamp - lastFrameTimeStamp
+      if timeSinceLastFrame > Constants.FrameLength {
+        imageView.image = renderer.render(cellBoard.livingCells)
+        lastFrameTimeStamp = NSDate.timeIntervalSinceReferenceDate()
+      }
       gesture.scale = 1
     case .Ended:
       gesture.scale = 1
@@ -100,7 +115,7 @@ class ViewController: UIViewController {
       }.start { newCellBoard in
         self.cellBoard = newCellBoard
         self.imageView.image = self.renderer.render(self.cellBoard.livingCells)
-        if self.startStopButton.title == Constants.ButtonStopTitle {
+        if self.isRunning {
           self.turnOnTimer()
         }
     }
@@ -121,6 +136,11 @@ class ViewController: UIViewController {
   }
 }
 
+extension NSDate {
+  private static var timestamp: NSTimeInterval {
+    return NSDate.timeIntervalSinceReferenceDate()
+  }
+}
 
 extension UIBarButtonItem {
   private var toggleTitle: String {

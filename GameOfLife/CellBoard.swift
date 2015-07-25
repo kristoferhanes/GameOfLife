@@ -15,14 +15,18 @@ struct CellBoard {
 extension CellBoard {
   init() { livingCells = Set<Cell>() }
 
-  func addCell(cell: Cell) -> CellBoard {
+  mutating func addCell(cell: Cell) -> CellBoard {
     return CellBoard(livingCells: livingCells.union([cell]))
+  }
+
+  mutating func toggleCell(cell: Cell) -> CellBoard {
+    return CellBoard(livingCells: livingCells.exclusiveOr([cell]))
   }
 
   func next() -> CellBoard {
     let neighbors = livingCells.flatMap { $0.neighbors }
     let deadNeighbors = neighbors.subtract(livingCells)
-    let livingNeighbors = livingCells.subtract(deadNeighbors)
+    let livingNeighbors = neighbors.subtract(deadNeighbors)
     let newborns = deadNeighbors.filter {
       $0.neighbors.intersect(livingNeighbors).count == 3
     }
