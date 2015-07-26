@@ -9,31 +9,44 @@
 import Foundation
 
 struct CellBoard {
-  let livingCells: Set<Cell>
+  let cells: Set<Cell>
 }
 
 extension CellBoard {
-  init() { livingCells = Set<Cell>() }
+  init() { cells = Set<Cell>() }
 
-  func addCell(cell: Cell) -> CellBoard {
-    return CellBoard(livingCells: livingCells.union([cell]))
+  func add(cell: Cell) -> CellBoard {
+    return CellBoard(cells: cells.union([cell]))
   }
 
-  func toggleCell(cell: Cell) -> CellBoard {
-    return CellBoard(livingCells: livingCells.exclusiveOr([cell]))
+  func toggle(cell: Cell) -> CellBoard {
+    return CellBoard(cells: cells.exclusiveOr([cell]))
   }
 
-  func next() -> CellBoard {
-    let neighbors = livingCells.flatMap { $0.neighbors }
-    let deadNeighbors = neighbors.subtract(livingCells)
-    let livingNeighbors = neighbors.subtract(deadNeighbors)
-    let newborns = deadNeighbors.filter {
-      $0.neighbors.intersect(livingNeighbors).count == 3
-    }
-    let survivors = livingNeighbors.filter {
-      let livingNeighborCount = $0.neighbors.intersect(livingNeighbors).count
-      return livingNeighborCount == 2 || livingNeighborCount == 3
-    }
-    return CellBoard(livingCells: newborns.union(survivors))
+  var next: CellBoard {
+    return CellBoard(cells:
+      survivors(live(neighbors)).union(newborns(dead(neighbors))))
+  }
+
+  private func survivors(liveCells: Set<Cell>) -> Set<Cell> {
+    return liveCells.filter
+      { self.live($0.neighbors).count == 2
+        || self.live($0.neighbors).count == 3 }
+  }
+
+  private func newborns(deadCells: Set<Cell>) -> Set<Cell> {
+    return deadCells.filter { self.live($0.neighbors).count == 3 }
+  }
+
+  private func live(cs: Set<Cell>) -> Set<Cell> {
+    return cs.intersect(cells)
+  }
+
+  private func dead(cs: Set<Cell>) -> Set<Cell> {
+    return cs.subtract(cells)
+  }
+
+  private var neighbors: Set<Cell> {
+    return cells.flatMap { $0.neighbors }
   }
 }

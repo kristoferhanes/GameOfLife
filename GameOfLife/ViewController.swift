@@ -9,8 +9,9 @@
 import UIKit
 
 private struct Constants {
-  static let defaultCellSize: CGFloat = 10
+  static let defaultCellSize: CGFloat = 5
   static let FrameLength = 1.0 / 30.0
+  static let GestureFrameLength = 1.0 / 30.0
   static let ButtonStopTitle = "Stop"
   static let ButtonStartTitle = "Start"
 }
@@ -29,28 +30,28 @@ class ViewController: UIViewController {
 
   var lastFrameTimeStamp = NSDate.timestamp
 
-  var isRunning: Bool {
+  var animationIsRunning: Bool {
     return startStopButton.title == Constants.ButtonStopTitle
   }
 
   override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     renderer = CellBoardRenderer(
-      bounds: CGRect(origin: CGPoint(x: 0, y: 0), size: imageView.bounds.size),
+      bounds: imageView.bounds,
       cellSize: renderer.cellSize)
   }
 
   @IBAction func clearCells(_: UIBarButtonItem) {
-    turnOffTimer()
+    turnOffAnimation()
     startStopButton.title = Constants.ButtonStartTitle
     cellBoard = CellBoard()
-    imageView.image = renderer.render(cellBoard.livingCells)
+    imageView.image = renderer.render(cellBoard.cells)
   }
 
   @IBAction func startStop(startStopButton: UIBarButtonItem) {
     startStopButton.title = startStopButton.toggleTitle
-    if startStopButton.title == Constants.ButtonStopTitle { turnOnTimer() }
-    else { turnOffTimer() }
+    if startStopButton.title == Constants.ButtonStopTitle { turnOnAnimation() }
+    else { turnOffAnimation() }
   }
 
   @IBAction func tapGestureHandler(gesture: UITapGestureRecognizer) {
@@ -60,31 +61,39 @@ class ViewController: UIViewController {
       let cell = Cell(
         x: Int(touchPoint.x / renderer.cellSize),
         y: Int(touchPoint.y / renderer.cellSize))
-      cellBoard = cellBoard.toggleCell(cell)
-      imageView.image = renderer.render(cellBoard.livingCells)
+      cellBoard = cellBoard.toggle(cell)
+      imageView.image = renderer.render(cellBoard.cells)
     default: break
     }
   }
 
   @IBAction func panGestureHandler(gesture: UIPanGestureRecognizer) {
     switch gesture.state {
+    case .Began:
+      turnOffAnimation()
+      fallthrough
     case .Changed:
       let touchPoint = gesture.locationInView(gesture.view) - renderer.bounds.origin
       let cell = Cell(
         x: Int(touchPoint.x / renderer.cellSize),
         y: Int(touchPoint.y / renderer.cellSize))
-      cellBoard = cellBoard.addCell(cell)
+      cellBoard = cellBoard.add(cell)
       let timeSinceLastFrame = NSDate.timestamp - lastFrameTimeStamp
-      if timeSinceLastFrame > Constants.FrameLength {
-        imageView.image = renderer.render(cellBoard.livingCells)
+      if timeSinceLastFrame > Constants.GestureFrameLength {
+        imageView.image = renderer.render(cellBoard.cells)
         lastFrameTimeStamp = NSDate.timeIntervalSinceReferenceDate()
       }
+    case .Ended:
+      if animationIsRunning { turnOnAnimation() }
     default: break
     }
   }
 
   @IBAction func pinchGestureHandler(gesture: UIPinchGestureRecognizer) {
     switch gesture.state {
+    case .Began:
+      turnOffAnimation()
+      fallthrough
     case .Changed:
       let location = gesture.locationInView(gesture.view)
       let scale = gesture.scale
@@ -96,32 +105,24 @@ class ViewController: UIViewController {
         size: imageView.bounds.size)
       renderer = CellBoardRenderer(bounds: newBounds, cellSize: newCellSize)
       let timeSinceLastFrame = NSDate.timestamp - lastFrameTimeStamp
-      if timeSinceLastFrame > Constants.FrameLength {
-        imageView.image = renderer.render(cellBoard.livingCells)
+      if timeSinceLastFrame > Constants.GestureFrameLength {
+        imageView.image = renderer.render(cellBoard.cells)
         lastFrameTimeStamp = NSDate.timeIntervalSinceReferenceDate()
       }
       gesture.scale = 1
     case .Ended:
+      if animationIsRunning { turnOnAnimation() }
       gesture.scale = 1
     default: break
     }
   }
 
-
   func drawNextFrame(_: NSTimer) {
-    turnOffTimer()
-    Future { completion in
-      completion(self.cellBoard.next())
-      }.start { newCellBoard in
-        self.cellBoard = newCellBoard
-        self.imageView.image = self.renderer.render(self.cellBoard.livingCells)
-        if self.isRunning {
-          self.turnOnTimer()
-        }
-    }
+    cellBoard = cellBoard.next
+    imageView.image = renderer.render(cellBoard.cells)
   }
 
-  private func turnOnTimer() {
+  private func turnOnAnimation() {
     timer?.invalidate()
     timer = NSTimer.scheduledTimerWithTimeInterval(Constants.FrameLength,
       target: self,
@@ -130,7 +131,7 @@ class ViewController: UIViewController {
       repeats: true)
   }
 
-  private func turnOffTimer() {
+  private func turnOffAnimation() {
     timer?.invalidate()
     timer = nil
   }
