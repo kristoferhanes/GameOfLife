@@ -15,7 +15,7 @@ struct CellBoardRenderer {
 
 extension CellBoardRenderer {
   func render(cells: Set<Cell>) -> UIImage {
-    return drawToUIImage(bounds.size) { context in
+    return drawToImage(bounds.size) { context in
       self.drawBackground(context)
       self.drawCells(cells, context)
     }
@@ -29,7 +29,7 @@ extension CellBoardRenderer {
   }
 
   private func drawCells(cells: Set<Cell>, _ context: CGContext) {
-    UIColor.orangeColor().setFill()
+    UIColor.lightGrayColor().setFill()
     for cell in cells {
       CGContextFillRect(context, CGRect(
         x: CGFloat(cell.x) * cellSize + bounds.origin.x,

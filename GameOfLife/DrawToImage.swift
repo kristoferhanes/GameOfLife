@@ -1,5 +1,5 @@
 //
-//  DrawToUIImage.swift
+//  DrawToImage.swift
 //  GameOfLife
 //
 //  Created by Kristofer Hanes on 2015 07 20.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-func drawToUIImage(size: CGSize, draw: CGContext->()) -> UIImage {
+func drawToImage(size: CGSize, draw: CGContext->()) -> UIImage {
     UIGraphicsBeginImageContextWithOptions(size, true, 0.0)
     
     let context = UIGraphicsGetCurrentContext()
