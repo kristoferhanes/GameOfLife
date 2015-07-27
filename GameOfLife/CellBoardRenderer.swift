@@ -22,14 +22,14 @@ extension CellBoardRenderer {
   }
 
   private func drawBackground(context: CGContext) {
-    UIColor.whiteColor().setFill()
+    UIColor.darkGrayColor().setFill()
     CGContextFillRect(context, CGRect(
       origin: CGPoint(x: 0, y: 0),
       size: bounds.size))
   }
 
   private func drawCells(cells: Set<Cell>, _ context: CGContext) {
-    UIColor.lightGrayColor().setFill()
+    UIColor.orangeColor().setFill()
     for cell in cells {
       CGContextFillRect(context, CGRect(
         x: CGFloat(cell.x) * cellSize + bounds.origin.x,

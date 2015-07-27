@@ -34,11 +34,12 @@ class ViewController: UIViewController {
     return startStopButton.title == Constants.ButtonStopTitle
   }
 
-  override func viewWillLayoutSubviews() {
-    super.viewWillLayoutSubviews()
+  override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
     renderer = CellBoardRenderer(
       bounds: imageView.bounds,
-      cellSize: renderer.cellSize)
+      cellSize: Constants.defaultCellSize)
+    imageView.image = renderer.render(cellBoard.cells)
   }
 
   @IBAction func clearCells(_: UIBarButtonItem) {
@@ -81,7 +82,7 @@ class ViewController: UIViewController {
       let timeSinceLastFrame = NSDate.timestamp - lastFrameTimeStamp
       if timeSinceLastFrame > Constants.GestureFrameLength {
         imageView.image = renderer.render(cellBoard.cells)
-        lastFrameTimeStamp = NSDate.timeIntervalSinceReferenceDate()
+        lastFrameTimeStamp = NSDate.timestamp
       }
     case .Ended:
       if animationIsRunning { turnOnAnimation() }
@@ -107,7 +108,7 @@ class ViewController: UIViewController {
       let timeSinceLastFrame = NSDate.timestamp - lastFrameTimeStamp
       if timeSinceLastFrame > Constants.GestureFrameLength {
         imageView.image = renderer.render(cellBoard.cells)
-        lastFrameTimeStamp = NSDate.timeIntervalSinceReferenceDate()
+        lastFrameTimeStamp = NSDate.timestamp
       }
       gesture.scale = 1
     case .Ended:
