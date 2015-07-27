@@ -8,7 +8,7 @@
 
 import UIKit
 
-func drawToImage(size: CGSize, draw: CGContext->()) -> UIImage {
+func drawToImage(size: CGSize)(_ draw: CGContext->()) -> UIImage {
     UIGraphicsBeginImageContextWithOptions(size, true, 0.0)
     
     let context = UIGraphicsGetCurrentContext()
