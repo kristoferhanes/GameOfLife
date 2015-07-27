@@ -1,5 +1,5 @@
 //
-//  CellBoardRenderer.swift
+//  CellBoardView.swift
 //  GameOfLife
 //
 //  Created by Kristofer Hanes on 2015 07 20.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct CellBoardRenderer {
+struct CellBoardView {
   let bounds: CGRect
   let cellSize: CGFloat
   private let renderImage: (CGContext->())->UIImage
@@ -20,7 +20,16 @@ struct CellBoardRenderer {
   }
 }
 
-extension CellBoardRenderer {
+extension CellBoardView {
+  func cellAtPoint(point: CGPoint) -> Cell {
+    let p = pointInView(point)
+    return Cell(x: Int(p.x / cellSize), y: Int(p.y / cellSize))
+  }
+
+  func pointInView(point: CGPoint) -> CGPoint {
+    return point - bounds.origin
+  }
+
   func render(cells: Set<Cell>) -> UIImage {
     return renderImage { context in
       self.renderBackground(context)
@@ -45,4 +54,8 @@ extension CellBoardRenderer {
         height: cellSize))
     }
   }
+}
+
+private func - (lhs: CGPoint, rhs:CGPoint) -> CGPoint {
+  return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
 }

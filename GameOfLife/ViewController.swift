@@ -22,7 +22,7 @@ class ViewController: UIViewController {
   @IBOutlet weak var startStopButton: UIBarButtonItem!
 
   var cellBoard = CellBoard()
-  var renderer = CellBoardRenderer(
+  var cellBoardView = CellBoardView(
     bounds: CGRect(),
     cellSize: Constants.defaultCellSize)
 
@@ -36,17 +36,17 @@ class ViewController: UIViewController {
 
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    renderer = CellBoardRenderer(
+    cellBoardView = CellBoardView(
       bounds: imageView.bounds,
       cellSize: Constants.defaultCellSize)
-    imageView.image = renderer.render(cellBoard.cells)
+    imageView.image = cellBoardView.render(cellBoard.cells)
   }
 
   @IBAction func clearCells(_: UIBarButtonItem) {
     turnOffAnimation()
     startStopButton.title = Constants.ButtonStartTitle
     cellBoard = CellBoard()
-    imageView.image = renderer.render(cellBoard.cells)
+    imageView.image = cellBoardView.render(cellBoard.cells)
   }
 
   @IBAction func startStop(startStopButton: UIBarButtonItem) {
@@ -58,12 +58,9 @@ class ViewController: UIViewController {
   @IBAction func tapGestureHandler(gesture: UITapGestureRecognizer) {
     switch gesture.state {
     case .Ended:
-      let touchPoint = gesture.locationInView(gesture.view) - renderer.bounds.origin
-      let cell = Cell(
-        x: Int(touchPoint.x / renderer.cellSize),
-        y: Int(touchPoint.y / renderer.cellSize))
-      cellBoard = cellBoard.toggle(cell)
-      imageView.image = renderer.render(cellBoard.cells)
+      cellBoard = cellBoard.toggle(
+        cellBoardView.cellAtPoint(gesture.locationInView(gesture.view)))
+      imageView.image = cellBoardView.render(cellBoard.cells)
     default: break
     }
   }
@@ -74,14 +71,11 @@ class ViewController: UIViewController {
       turnOffAnimation()
       fallthrough
     case .Changed:
-      let touchPoint = gesture.locationInView(gesture.view) - renderer.bounds.origin
-      let cell = Cell(
-        x: Int(touchPoint.x / renderer.cellSize),
-        y: Int(touchPoint.y / renderer.cellSize))
-      cellBoard = cellBoard.add(cell)
+      cellBoard = cellBoard.add(
+        cellBoardView.cellAtPoint(gesture.locationInView(gesture.view)))
       let timeSinceLastFrame = NSDate.timestamp - lastFrameTimeStamp
       if timeSinceLastFrame > Constants.GestureFrameLength {
-        imageView.image = renderer.render(cellBoard.cells)
+        imageView.image = cellBoardView.render(cellBoard.cells)
         lastFrameTimeStamp = NSDate.timestamp
       }
     case .Ended:
@@ -98,16 +92,16 @@ class ViewController: UIViewController {
     case .Changed:
       let location = gesture.locationInView(gesture.view)
       let scale = gesture.scale
-      let newCellSize = renderer.cellSize * scale
-      let x = (renderer.bounds.origin.x - location.x) * scale + location.x
-      let y = (renderer.bounds.origin.y - location.y) * scale + location.y
+      let newCellSize = cellBoardView.cellSize * scale
+      let x = (cellBoardView.bounds.origin.x - location.x) * scale + location.x
+      let y = (cellBoardView.bounds.origin.y - location.y) * scale + location.y
       let newBounds = CGRect(
         origin: CGPoint(x: x, y: y),
         size: imageView.bounds.size)
-      renderer = CellBoardRenderer(bounds: newBounds, cellSize: newCellSize)
+      cellBoardView = CellBoardView(bounds: newBounds, cellSize: newCellSize)
       let timeSinceLastFrame = NSDate.timestamp - lastFrameTimeStamp
       if timeSinceLastFrame > Constants.GestureFrameLength {
-        imageView.image = renderer.render(cellBoard.cells)
+        imageView.image = cellBoardView.render(cellBoard.cells)
         lastFrameTimeStamp = NSDate.timestamp
       }
       gesture.scale = 1
@@ -120,7 +114,7 @@ class ViewController: UIViewController {
 
   func drawNextFrame(_: NSTimer) {
     cellBoard = cellBoard.next
-    imageView.image = renderer.render(cellBoard.cells)
+    imageView.image = cellBoardView.render(cellBoard.cells)
   }
 
   private func turnOnAnimation() {
@@ -152,10 +146,4 @@ extension UIBarButtonItem {
     default: fatalError("Invalid button title")
     }
   }
-}
-
-private func - (lhs: CGPoint, rhs:CGPoint) -> CGPoint {
-  let x = lhs.x - rhs.x
-  let y = lhs.y - rhs.y
-  return CGPoint(x: x, y: y)
 }
