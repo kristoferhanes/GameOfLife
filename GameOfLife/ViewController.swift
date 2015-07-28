@@ -55,7 +55,7 @@ class ViewController: UIViewController {
 
   @IBAction func startStop(startStopButton: UIBarButtonItem) {
     startStopButton.title = startStopButton.toggledTitle
-    if startStopButton.title == Constants.ButtonStopTitle { turnOnAnimation() }
+    if animationIsRunning { turnOnAnimation() }
     else { turnOffAnimation() }
   }
 
