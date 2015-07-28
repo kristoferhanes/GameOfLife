@@ -38,7 +38,7 @@ extension CellBoard {
   }
 
   private func newborns(deadCells: Set<Cell>) -> Set<Cell> {
-    return deadCells.filter { self.live($0.neighbors).count == 3 }
+    return deadCells.filter { self.liveNeighborCount($0) == 3 }
   }
 
   private func live(cs: Set<Cell>) -> Set<Cell> {
