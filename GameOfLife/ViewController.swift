@@ -73,7 +73,6 @@ class ViewController: UIViewController {
     switch gesture.state {
     case .Began:
       turnOffAnimation()
-      lastFrameTimeStamp = NSDate.timestamp
       fallthrough
     case .Changed:
       cellBoard = cellBoard.add(
@@ -89,7 +88,6 @@ class ViewController: UIViewController {
     switch gesture.state {
     case .Began:
       turnOffAnimation()
-      lastFrameTimeStamp = NSDate.timestamp
       fallthrough
     case .Changed:
       cellBoardView = cellBoardView.pinch(
