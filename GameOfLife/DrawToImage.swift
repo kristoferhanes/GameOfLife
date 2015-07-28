@@ -9,15 +9,15 @@
 import UIKit
 
 func drawToImage(size: CGSize)(_ draw: CGContext->()) -> UIImage {
-    UIGraphicsBeginImageContextWithOptions(size, true, 0.0)
-    
-    let context = UIGraphicsGetCurrentContext()
-    UIGraphicsPushContext(context)
+  UIGraphicsBeginImageContextWithOptions(size, true, 0.0)
 
-    draw(context)
+  let context = UIGraphicsGetCurrentContext()
+  UIGraphicsPushContext(context)
 
-    UIGraphicsPopContext()
-    let result = UIGraphicsGetImageFromCurrentImageContext()
-    UIGraphicsEndImageContext()
-    return result
+  draw(context)
+
+  UIGraphicsPopContext()
+  let result = UIGraphicsGetImageFromCurrentImageContext()
+  UIGraphicsEndImageContext()
+  return result
 }
