@@ -40,7 +40,7 @@ extension CellBoardView {
   func render(cells: Set<Cell>) -> UIImage {
     return renderImage { context in
       self.renderBackground(context)
-      self.renderCells(cells, context)
+      self.renderCells(context, cells)
     }
   }
 
@@ -49,7 +49,7 @@ extension CellBoardView {
     CGContextFillRect(context, CGRect(origin: CGPointZero, size: bounds.size))
   }
 
-  private func renderCells(cells: Set<Cell>, _ context: CGContext) {
+  private func renderCells(context: CGContext, _ cells: Set<Cell>) {
     UIColor.lightGrayColor().setFill()
     for cell in cells {
       CGContextFillRect(context, CGRect(
