@@ -33,12 +33,12 @@ extension CellBoard {
       { self.liveNeighborCount($0) == 2 || self.liveNeighborCount($0) == 3 }
   }
 
-  private func liveNeighborCount(cell: Cell) -> Int {
-    return live(cell.neighbors).count
-  }
-
   private func newborns(deadCells: Set<Cell>) -> Set<Cell> {
     return deadCells.filter { self.liveNeighborCount($0) == 3 }
+  }
+
+  private func liveNeighborCount(cell: Cell) -> Int {
+    return live(cell.neighbors).count
   }
 
   private func live(cs: Set<Cell>) -> Set<Cell> {

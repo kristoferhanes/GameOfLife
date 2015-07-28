@@ -53,8 +53,8 @@ extension CellBoardView {
     UIColor.lightGrayColor().setFill()
     for cell in cells {
       CGContextFillRect(context, CGRect(
-        origin: CGPoint(x: cell.x, y: cell.y) * cellSize + bounds.origin,
-        size: CGSize(width: cellSize, height: cellSize)))
+        origin: CGPoint(cell: cell) * cellSize + bounds.origin,
+        size: CGSize(size: cellSize)))
     }
   }
 }
@@ -63,6 +63,20 @@ extension Cell {
   private init(point: CGPoint) {
     x = Int(point.x)
     y = Int(point.y)
+  }
+}
+
+extension CGPoint {
+  private init(cell: Cell) {
+    x = CGFloat(cell.x)
+    y = CGFloat(cell.y)
+  }
+}
+
+extension CGSize {
+  private init(size: CGFloat) {
+    width = size
+    height = size
   }
 }
 
