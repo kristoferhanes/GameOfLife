@@ -54,7 +54,7 @@ class ViewController: UIViewController {
   }
 
   @IBAction func startStop(startStopButton: UIBarButtonItem) {
-    startStopButton.title = startStopButton.toggleTitle
+    startStopButton.title = startStopButton.toggledTitle
     if startStopButton.title == Constants.ButtonStopTitle { turnOnAnimation() }
     else { turnOffAnimation() }
   }
@@ -139,7 +139,7 @@ extension NSDate {
 }
 
 extension UIBarButtonItem {
-  private var toggleTitle: String {
+  private var toggledTitle: String {
     switch title ?? "" {
     case Constants.ButtonStartTitle: return Constants.ButtonStopTitle
     case Constants.ButtonStopTitle: return Constants.ButtonStartTitle
