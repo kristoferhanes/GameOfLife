@@ -21,16 +21,20 @@ class ViewController: UIViewController {
   @IBOutlet weak var imageView: UIImageView!
   @IBOutlet weak var startStopButton: UIBarButtonItem!
 
-  var cellBoard = CellBoard()
-  var cellBoardView = CellBoardView(
+  private var cellBoard = CellBoard()
+  private var cellBoardView = CellBoardView(
     bounds: CGRect(),
     cellSize: Constants.defaultCellSize)
 
-  var timer: NSTimer?
+  private var timer: NSTimer?
 
-  var lastFrameTimeStamp = NSDate.timestamp
+  private var lastFrameTimeStamp = NSDate.timestamp
 
-  var animationIsRunning: Bool {
+  private var timeSinceLastFrame: NSTimeInterval {
+    return NSDate.timestamp - lastFrameTimeStamp
+  }
+
+  private var animationIsRunning: Bool {
     return startStopButton.title == Constants.ButtonStopTitle
   }
 
@@ -59,7 +63,7 @@ class ViewController: UIViewController {
     switch gesture.state {
     case .Ended:
       cellBoard = cellBoard.toggle(
-        cellBoardView.cellAtPoint(gesture.locationInView(gesture.view)))
+        cellBoardView.cellAtPoint(gesture.locationInView))
       imageView.image = cellBoardView.render(cellBoard.cells)
     default: break
     }
@@ -69,15 +73,12 @@ class ViewController: UIViewController {
     switch gesture.state {
     case .Began:
       turnOffAnimation()
+      lastFrameTimeStamp = NSDate.timestamp
       fallthrough
     case .Changed:
       cellBoard = cellBoard.add(
-        cellBoardView.cellAtPoint(gesture.locationInView(gesture.view)))
-      let timeSinceLastFrame = NSDate.timestamp - lastFrameTimeStamp
-      if timeSinceLastFrame > Constants.GestureFrameLength {
-        imageView.image = cellBoardView.render(cellBoard.cells)
-        lastFrameTimeStamp = NSDate.timestamp
-      }
+        cellBoardView.cellAtPoint(gesture.locationInView))
+      imageView.image = nextCellBoardImageFrame
     case .Ended:
       if animationIsRunning { turnOnAnimation() }
     default: break
@@ -88,28 +89,29 @@ class ViewController: UIViewController {
     switch gesture.state {
     case .Began:
       turnOffAnimation()
+      lastFrameTimeStamp = NSDate.timestamp
       fallthrough
     case .Changed:
-      let location = gesture.locationInView(gesture.view)
-      let scale = gesture.scale
-      let newCellSize = cellBoardView.cellSize * scale
-      let x = (cellBoardView.bounds.origin.x - location.x) * scale + location.x
-      let y = (cellBoardView.bounds.origin.y - location.y) * scale + location.y
-      let newBounds = CGRect(
-        origin: CGPoint(x: x, y: y),
-        size: imageView.bounds.size)
-      cellBoardView = CellBoardView(bounds: newBounds, cellSize: newCellSize)
-      let timeSinceLastFrame = NSDate.timestamp - lastFrameTimeStamp
-      if timeSinceLastFrame > Constants.GestureFrameLength {
-        imageView.image = cellBoardView.render(cellBoard.cells)
-        lastFrameTimeStamp = NSDate.timestamp
-      }
+      cellBoardView = cellBoardView.pinch(
+        location: gesture.locationInView,
+        scale: gesture.scale,
+        bounds: imageView.bounds)
+      imageView.image = nextCellBoardImageFrame
       gesture.scale = 1
     case .Ended:
       if animationIsRunning { turnOnAnimation() }
       gesture.scale = 1
     default: break
     }
+  }
+
+  private var nextCellBoardImageFrame: UIImage? {
+    var result = imageView.image
+    if timeSinceLastFrame > Constants.GestureFrameLength {
+      result = cellBoardView.render(cellBoard.cells)
+      lastFrameTimeStamp = NSDate.timestamp
+    }
+    return result
   }
 
   func drawNextFrame(_: NSTimer) {
@@ -145,5 +147,11 @@ extension UIBarButtonItem {
     case Constants.ButtonStopTitle: return Constants.ButtonStartTitle
     default: fatalError("Invalid button title")
     }
+  }
+}
+
+extension UIGestureRecognizer {
+  private var locationInView: CGPoint {
+    return locationInView(view)
   }
 }

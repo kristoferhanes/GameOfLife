@@ -21,12 +21,19 @@ struct CellBoardView {
 }
 
 extension CellBoardView {
-  func cellAtPoint(point: CGPoint) -> Cell {
-    let p = pointInView(point)
-    return Cell(x: Int(p.x / cellSize), y: Int(p.y / cellSize))
+  func pinch(#location: CGPoint, scale: CGFloat, bounds: CGRect) -> CellBoardView {
+    return CellBoardView(
+      bounds: CGRect(
+        origin: (self.bounds.origin - location) * scale + location,
+        size: bounds.size),
+      cellSize: cellSize * scale)
   }
 
-  func pointInView(point: CGPoint) -> CGPoint {
+  func cellAtPoint(point: CGPoint) -> Cell {
+    return Cell(point: pointInView(point) / cellSize)
+  }
+
+  private func pointInView(point: CGPoint) -> CGPoint {
     return point - bounds.origin
   }
 
@@ -39,23 +46,38 @@ extension CellBoardView {
 
   private func renderBackground(context: CGContext) {
     UIColor.darkGrayColor().setFill()
-    CGContextFillRect(context, CGRect(
-      origin: CGPoint(x: 0, y: 0),
-      size: bounds.size))
+    CGContextFillRect(context, CGRect(origin: CGPointZero, size: bounds.size))
   }
 
   private func renderCells(cells: Set<Cell>, _ context: CGContext) {
     UIColor.lightGrayColor().setFill()
     for cell in cells {
       CGContextFillRect(context, CGRect(
-        x: CGFloat(cell.x) * cellSize + bounds.origin.x,
-        y: CGFloat(cell.y) * cellSize + bounds.origin.y,
-        width: cellSize,
-        height: cellSize))
+        origin: CGPoint(x: cell.x, y: cell.y) * cellSize + bounds.origin,
+        size: CGSize(width: cellSize, height: cellSize)))
     }
   }
 }
 
-private func - (lhs: CGPoint, rhs:CGPoint) -> CGPoint {
+extension Cell {
+  private init(point: CGPoint) {
+    x = Int(point.x)
+    y = Int(point.y)
+  }
+}
+
+private func - (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
   return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
+}
+
+private func + (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+  return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
+}
+
+private func * (lhs: CGPoint, rhs: CGFloat) -> CGPoint {
+  return CGPoint(x: lhs.x * rhs, y: lhs.y * rhs)
+}
+
+private func / (lhs: CGPoint, rhs: CGFloat) -> CGPoint {
+  return CGPoint(x: lhs.x / rhs, y: lhs.y / rhs)
 }
