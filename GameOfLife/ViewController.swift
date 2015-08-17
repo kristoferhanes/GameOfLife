@@ -10,8 +10,8 @@ import UIKit
 
 private struct Constants {
   static let defaultCellSize = CGFloat(16)
-  static let FrameLength = 1.0 / 20.0
-  static let AnimationFrameLength = 1.0 / 30.0
+  static let FrameLength = 1.0 / 23.0
+  static let AnimationFrameLength = 1.0 / 60.0
   static let ButtonStopTitle = "Stop"
   static let ButtonStartTitle = "Start"
 }
@@ -43,14 +43,14 @@ class ViewController: UIViewController {
     cellBoardView = CellBoardView(
       bounds: imageView.bounds,
       cellSize: Constants.defaultCellSize)
-    imageView.image = cellBoardView.render(cellBoard.cells)
+    imageView.image = cellBoardView.image(cellBoard.livingCells)
   }
 
   @IBAction func clearCells(_: UIBarButtonItem) {
     turnOffAnimation()
     startStopButton.title = Constants.ButtonStartTitle
     cellBoard = CellBoard()
-    imageView.image = cellBoardView.render(cellBoard.cells)
+    imageView.image = cellBoardView.image(cellBoard.livingCells)
   }
 
   @IBAction func startStop(startStopButton: UIBarButtonItem) {
@@ -64,7 +64,7 @@ class ViewController: UIViewController {
     case .Ended:
       cellBoard = cellBoard.toggle(
         cellBoardView.cellAtPoint(gesture.locationInView))
-      imageView.image = cellBoardView.render(cellBoard.cells)
+      imageView.image = cellBoardView.image(cellBoard.livingCells)
     default: break
     }
   }
@@ -86,7 +86,10 @@ class ViewController: UIViewController {
 
   @IBAction func pinchGestureHandler(gesture: UIPinchGestureRecognizer) {
     switch gesture.state {
-    case .Began, .Changed:
+    case .Began:
+      turnOffAnimation()
+      fallthrough
+    case .Changed:
       cellBoardView = cellBoardView.pinch(
         location: gesture.locationInView,
         scale: gesture.scale,
@@ -95,6 +98,7 @@ class ViewController: UIViewController {
       gesture.scale = 1
     case .Ended:
       gesture.scale = 1
+      if animationIsRunning { turnOnAnimation() }
     default: break
     }
   }
@@ -102,7 +106,7 @@ class ViewController: UIViewController {
   private var nextCellBoardImageFrame: UIImage? {
     var result = imageView.image
     if timeSinceLastFrame >= Constants.AnimationFrameLength {
-      result = cellBoardView.render(cellBoard.cells)
+      result = cellBoardView.image(cellBoard.livingCells)
       lastFrameTimeStamp = NSDate.timestamp
     }
     return result
@@ -110,7 +114,7 @@ class ViewController: UIViewController {
 
   func drawNextFrame(_: NSTimer) {
     cellBoard = cellBoard.next
-    imageView.image = nextCellBoardImageFrame
+    imageView.image = cellBoardView.image(cellBoard.livingCells)
   }
 
   private func turnOnAnimation() {

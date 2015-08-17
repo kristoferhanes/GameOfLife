@@ -9,8 +9,8 @@
 import UIKit
 
 struct CellBoardView {
-  let bounds: CGRect
-  let cellSize: CGFloat
+  private let bounds: CGRect
+  private let cellSize: CGFloat
   private let renderImage: (CGContext->())->UIImage
 
   init(bounds: CGRect, cellSize: CGFloat) {
@@ -33,15 +33,15 @@ extension CellBoardView {
     return Cell(point: pointInView(point) / cellSize)
   }
 
-  private func pointInView(point: CGPoint) -> CGPoint {
-    return point - bounds.origin
-  }
-
-  func render(cells: Set<Cell>) -> UIImage {
+  func image(cells: Set<Cell>) -> UIImage {
     return renderImage { context in
       self.renderBackground(context)
       self.renderCells(context, cells)
     }
+  }
+
+  private func pointInView(point: CGPoint) -> CGPoint {
+    return point - bounds.origin
   }
 
   private func renderBackground(context: CGContext) {
