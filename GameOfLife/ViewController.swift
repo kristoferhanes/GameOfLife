@@ -40,9 +40,10 @@ class ViewController: UIViewController {
 
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
+    let newOrigin = imageView.bounds.origin + cellBoardView.bounds.origin
     cellBoardView = CellBoardView(
-      bounds: imageView.bounds,
-      cellSize: Constants.defaultCellSize)
+      bounds: CGRect(origin: newOrigin, size: imageView.bounds.size),
+      cellSize: cellBoardView.cellSize)
     imageView.image = cellBoardView.image(cellBoard.livingCells)
   }
 

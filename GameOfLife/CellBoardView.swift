@@ -9,9 +9,9 @@
 import UIKit
 
 struct CellBoardView {
-  private let bounds: CGRect
-  private let cellSize: CGFloat
-  private let renderImage: (CGContext->())->UIImage
+  let bounds: CGRect
+  let cellSize: CGFloat
+  let renderImage: (CGContext->())->UIImage
 
   init(bounds: CGRect, cellSize: CGFloat) {
     self.bounds = bounds
@@ -60,38 +60,38 @@ extension CellBoardView {
 }
 
 extension Cell {
-  private init(point: CGPoint) {
+  init(point: CGPoint) {
     x = Int(point.x)
     y = Int(point.y)
   }
 }
 
 extension CGPoint {
-  private init(cell: Cell) {
+  init(cell: Cell) {
     x = CGFloat(cell.x)
     y = CGFloat(cell.y)
   }
 }
 
 extension CGSize {
-  private init(size: CGFloat) {
+  init(size: CGFloat) {
     width = size
     height = size
   }
 }
 
-private func - (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+func - (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
   return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
 }
 
-private func + (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+func + (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
   return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
 }
 
-private func * (lhs: CGPoint, rhs: CGFloat) -> CGPoint {
+func * (lhs: CGPoint, rhs: CGFloat) -> CGPoint {
   return CGPoint(x: lhs.x * rhs, y: lhs.y * rhs)
 }
 
-private func / (lhs: CGPoint, rhs: CGFloat) -> CGPoint {
+func / (lhs: CGPoint, rhs: CGFloat) -> CGPoint {
   return CGPoint(x: lhs.x / rhs, y: lhs.y / rhs)
 }
