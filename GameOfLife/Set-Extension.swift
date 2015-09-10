@@ -9,7 +9,7 @@
 import Foundation
 
 extension Set {
-  func map<U>(transform: T->U) -> Set<U> {
+  func map<U>(transform: Element->U) -> Set<U> {
     var result = Set<U>()
     for x in self {
       result.insert(transform(x))
@@ -17,7 +17,7 @@ extension Set {
     return result
   }
 
-  func flatMap<U>(transform: T->Set<U>) -> Set<U> {
+  func flatMap<U>(transform: Element->Set<U>) -> Set<U> {
     var result = Set<U>()
     for x in self {
       result.unionInPlace(transform(x))
@@ -25,8 +25,8 @@ extension Set {
     return result
   }
 
-  func filter(includeElement: T->Bool) -> Set<T> {
-    var result = Set<T>()
+  func filter(includeElement: Element->Bool) -> Set<Element> {
+    var result = Set<Element>()
     for x in self {
       if includeElement(x) { result.insert(x) }
     }

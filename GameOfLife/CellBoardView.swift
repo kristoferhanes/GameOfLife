@@ -21,7 +21,7 @@ struct CellBoardView {
 }
 
 extension CellBoardView {
-  func pinch(#location: CGPoint, scale: CGFloat, bounds: CGRect) -> CellBoardView {
+  func pinch(location location: CGPoint, scale: CGFloat, bounds: CGRect) -> CellBoardView {
     return CellBoardView(
       bounds: CGRect(
         origin: (self.bounds.origin - location) * scale + location,
