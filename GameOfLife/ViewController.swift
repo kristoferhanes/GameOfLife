@@ -63,8 +63,7 @@ class ViewController: UIViewController {
   @IBAction func tapGestureHandler(gesture: UITapGestureRecognizer) {
     switch gesture.state {
     case .Ended:
-      cellBoard = cellBoard.toggle(
-        cellBoardView.cellAtPoint(gesture.locationInView))
+      cellBoard.toggle(cellBoardView.cellAtPoint(gesture.locationInView))
       imageView.image = cellBoardView.image(cellBoard.livingCells)
     default: break
     }
@@ -76,8 +75,7 @@ class ViewController: UIViewController {
       turnOffAnimation()
       fallthrough
     case .Changed:
-      cellBoard = cellBoard.add(
-        cellBoardView.cellAtPoint(gesture.locationInView))
+      cellBoard.add(cellBoardView.cellAtPoint(gesture.locationInView))
       imageView.image = nextCellBoardImageFrame
     case .Ended:
       if animationIsRunning { turnOnAnimation() }

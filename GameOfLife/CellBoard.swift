@@ -9,18 +9,18 @@
 import Foundation
 
 struct CellBoard {
-  let livingCells: Set<Cell>
+  private(set) var livingCells: Set<Cell>
 }
 
 extension CellBoard {
   init() { livingCells = Set<Cell>() }
 
-  func add(cell: Cell) -> CellBoard {
-    return CellBoard(livingCells: livingCells.union([cell]))
+  mutating func add(cell: Cell) {
+    livingCells.insert(cell)
   }
 
-  func toggle(cell: Cell) -> CellBoard {
-    return CellBoard(livingCells: livingCells.exclusiveOr([cell]))
+  mutating func toggle(cell: Cell) {
+    livingCells.exclusiveOrInPlace([cell])
   }
 
   var next: CellBoard {
