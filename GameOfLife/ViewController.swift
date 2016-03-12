@@ -112,7 +112,7 @@ class ViewController: UIViewController {
   }
 
   func drawNextFrame(_: NSTimer) {
-    cellBoard = cellBoard.next
+    cellBoard.next()
     imageView.image = cellBoardView.image(cellBoard.livingCells)
   }
 
