@@ -18,7 +18,7 @@ extension Set {
   }
 
   func flatMap<U>(@noescape transform: Element->Set<U>) -> Set<U> {
-    var result = Set<U>(minimumCapacity: count)
+    var result = Set<U>(minimumCapacity: count*8)
     for x in self {
       result.unionInPlace(transform(x))
     }
@@ -26,7 +26,7 @@ extension Set {
   }
 
   func filter(@noescape includeElement: Element->Bool) -> Set<Element> {
-    var result: Set<Element> = []
+    var result = Set(minimumCapacity: count)
     for x in self {
       if includeElement(x) { result.insert(x) }
     }

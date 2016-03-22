@@ -24,27 +24,45 @@ extension CellBoard {
 
   mutating func next() {
 
-    func livingNeighborCount(cell: Cell) -> Int {
-      return cell.neighbors.intersect(livingCells).count
+    func livingNeighborCount(of cell: Cell) -> Int {
+      return neighbors(of: cell).intersect(livingCells).count
     }
 
-    func livingCellSurvives(cell: Cell) -> Bool {
-      let neighborCount = livingNeighborCount(cell)
+    func isSurvivor(cell: Cell) -> Bool {
+      let neighborCount = livingNeighborCount(of: cell)
       return neighborCount == 2 || neighborCount == 3
     }
 
-    func isBorn(cell: Cell) -> Bool {
-      return livingNeighborCount(cell) == 3
+    func isNewborn(cell: Cell) -> Bool {
+      return livingNeighborCount(of: cell) == 3
     }
 
-    let allNeighbors = livingCells.flatMap { $0.neighbors }
-    let livingNeighbors = allNeighbors.intersect(livingCells)
-    let deadNeighbors = allNeighbors.subtract(livingCells)
-    let survivors = livingNeighbors.filter(livingCellSurvives)
-    let newborns = deadNeighbors.filter(isBorn)
+    func neighbors(of cell: Cell) -> Set<Cell> {
+      struct Memo { static var neighbors: [Cell:Set<Cell>] = [:] }
+
+      if let ns = Memo.neighbors[cell] { return ns }
+      let x = cell.x
+      let y = cell.y
+      let result: Set = [
+        Cell(x: x-1, y: y-1),
+        Cell(x: x-1, y: y  ),
+        Cell(x: x-1, y: y+1),
+        Cell(x: x,   y: y-1),
+        Cell(x: x,   y: y+1),
+        Cell(x: x+1, y: y-1),
+        Cell(x: x+1, y: y  ),
+        Cell(x: x+1, y: y+1)
+      ]
+      Memo.neighbors[cell] = result
+      return result
+    }
+
+    let allNeighbors = livingCells.flatMap(neighbors)
+    let survivors = allNeighbors.intersect(livingCells).filter(isSurvivor)
+    let newborns = allNeighbors.subtract(livingCells).filter(isNewborn)
 
     livingCells = survivors.union(newborns)
     
   }
-
+  
 }

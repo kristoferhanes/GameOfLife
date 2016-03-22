@@ -19,21 +19,3 @@ extension Cell: Hashable {
 func == (lhs: Cell, rhs: Cell) -> Bool {
   return lhs.x == rhs.x && lhs.y == rhs.y
 }
-
-extension Cell {
-  var neighbors: Set<Cell> {
-    struct Memo { static var neighbors = [Cell:Set<Cell>]() }
-    if let ns = Memo.neighbors[self] { return ns }
-    let result = Set([
-      Cell(x: x-1, y: y-1),
-      Cell(x: x-1, y: y  ),
-      Cell(x: x-1, y: y+1),
-      Cell(x: x,   y: y-1),
-      Cell(x: x,   y: y+1),
-      Cell(x: x+1, y: y-1),
-      Cell(x: x+1, y: y  ),
-      Cell(x: x+1, y: y+1)])
-    Memo.neighbors[self] = result
-    return result
-  }
-}

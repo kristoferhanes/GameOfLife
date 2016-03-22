@@ -11,7 +11,7 @@ import UIKit
 private struct Constants {
   static let defaultCellSize = CGFloat(16)
   static let FrameLength = 1.0 / 23.0
-  static let AnimationFrameLength = 1.0 / 60.0
+  static let AnimationFrameLength = 1.0 / 30.0
   static let ButtonStopTitle = "Stop"
   static let ButtonStartTitle = "Start"
 }
@@ -119,10 +119,10 @@ class ViewController: UIViewController {
   private func turnOnAnimation() {
     timer?.invalidate()
     timer = NSTimer.scheduledTimerWithTimeInterval(Constants.FrameLength,
-      target: self,
-      selector: Selector("drawNextFrame:"),
-      userInfo: nil,
-      repeats: true)
+                                                   target: self,
+                                                   selector: #selector(ViewController.drawNextFrame(_:)),
+                                                   userInfo: nil,
+                                                   repeats: true)
   }
 
   private func turnOffAnimation() {
