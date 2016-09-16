@@ -9,7 +9,7 @@
 import Foundation
 
 extension Set {
-  func map<U>(@noescape transform: Element->U) -> Set<U> {
+  func map<U>(_ transform: (Element)->U) -> Set<U> {
     var result = Set<U>(minimumCapacity: count)
     for x in self {
       result.insert(transform(x))
@@ -17,15 +17,15 @@ extension Set {
     return result
   }
 
-  func flatMap<U>(@noescape transform: Element->Set<U>) -> Set<U> {
+  func flatMap<U>(_ transform: (Element)->Set<U>) -> Set<U> {
     var result = Set<U>(minimumCapacity: count*8)
     for x in self {
-      result.unionInPlace(transform(x))
+      result.formUnion(transform(x))
     }
     return result
   }
 
-  func filter(@noescape includeElement: Element->Bool) -> Set<Element> {
+  func filter(_ includeElement: (Element)->Bool) -> Set<Element> {
     var result = Set(minimumCapacity: count)
     for x in self {
       if includeElement(x) { result.insert(x) }

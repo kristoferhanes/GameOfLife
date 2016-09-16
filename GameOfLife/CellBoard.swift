@@ -9,31 +9,31 @@
 import Foundation
 
 struct CellBoard {
-  private(set) var livingCells: Set<Cell> = []
+  fileprivate(set) var livingCells: Set<Cell> = []
 }
 
 extension CellBoard {
 
-  mutating func add(cell: Cell) {
+  mutating func add(_ cell: Cell) {
     livingCells.insert(cell)
   }
 
-  mutating func toggle(cell: Cell) {
-    livingCells.exclusiveOrInPlace([cell])
+  mutating func toggle(_ cell: Cell) {
+    livingCells.formSymmetricDifference([cell])
   }
 
   mutating func next() {
 
     func livingNeighborCount(of cell: Cell) -> Int {
-      return neighbors(of: cell).intersect(livingCells).count
+      return neighbors(of: cell).intersection(livingCells).count
     }
 
-    func isSurvivor(cell: Cell) -> Bool {
+    func isSurvivor(_ cell: Cell) -> Bool {
       let neighborCount = livingNeighborCount(of: cell)
       return neighborCount == 2 || neighborCount == 3
     }
 
-    func isNewborn(cell: Cell) -> Bool {
+    func isNewborn(_ cell: Cell) -> Bool {
       return livingNeighborCount(of: cell) == 3
     }
 
@@ -58,8 +58,8 @@ extension CellBoard {
     }
 
     let allNeighbors = livingCells.flatMap(neighbors)
-    let survivors = allNeighbors.intersect(livingCells).filter(isSurvivor)
-    let newborns = allNeighbors.subtract(livingCells).filter(isNewborn)
+    let survivors = allNeighbors.intersection(livingCells).filter(isSurvivor)
+    let newborns = allNeighbors.subtracting(livingCells).filter(isNewborn)
 
     livingCells = survivors.union(newborns)
     

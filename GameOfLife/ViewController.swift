@@ -21,20 +21,20 @@ class ViewController: UIViewController {
   @IBOutlet weak var imageView: UIImageView!
   @IBOutlet weak var startStopButton: UIBarButtonItem!
 
-  private var cellBoard = CellBoard()
-  private var cellBoardView = CellBoardView(
+  fileprivate var cellBoard = CellBoard()
+  fileprivate var cellBoardView = CellBoardView(
     bounds: CGRect(),
     cellSize: Constants.defaultCellSize)
 
-  private var timer: NSTimer?
+  fileprivate var timer: Timer?
 
-  private var lastFrameTimeStamp = NSDate.timestamp
+  fileprivate var lastFrameTimeStamp = Date.timestamp
 
-  private var timeSinceLastFrame: NSTimeInterval {
-    return NSDate.timestamp - lastFrameTimeStamp
+  fileprivate var timeSinceLastFrame: TimeInterval {
+    return Date.timestamp - lastFrameTimeStamp
   }
 
-  private var animationIsRunning: Bool {
+  fileprivate var animationIsRunning: Bool {
     return startStopButton.title == Constants.ButtonStopTitle
   }
 
@@ -54,91 +54,91 @@ class ViewController: UIViewController {
     imageView.image = cellBoardView.image(cellBoard.livingCells)
   }
 
-  @IBAction func startStop(startStopButton: UIBarButtonItem) {
+  @IBAction func startStop(_ startStopButton: UIBarButtonItem) {
     startStopButton.title = startStopButton.toggledTitle
     if animationIsRunning { turnOnAnimation() }
     else { turnOffAnimation() }
   }
 
-  @IBAction func tapGestureHandler(gesture: UITapGestureRecognizer) {
+  @IBAction func tapGestureHandler(_ gesture: UITapGestureRecognizer) {
     switch gesture.state {
-    case .Ended:
+    case .ended:
       cellBoard.toggle(cellBoardView.cellAtPoint(gesture.locationInView))
       imageView.image = cellBoardView.image(cellBoard.livingCells)
     default: break
     }
   }
 
-  @IBAction func panGestureHandler(gesture: UIPanGestureRecognizer) {
+  @IBAction func panGestureHandler(_ gesture: UIPanGestureRecognizer) {
     switch gesture.state {
-    case .Began:
+    case .began:
       turnOffAnimation()
       fallthrough
-    case .Changed:
+    case .changed:
       cellBoard.add(cellBoardView.cellAtPoint(gesture.locationInView))
       imageView.image = nextCellBoardImageFrame
-    case .Ended:
+    case .ended:
       if animationIsRunning { turnOnAnimation() }
     default: break
     }
   }
 
-  @IBAction func pinchGestureHandler(gesture: UIPinchGestureRecognizer) {
+  @IBAction func pinchGestureHandler(_ gesture: UIPinchGestureRecognizer) {
     switch gesture.state {
-    case .Began:
+    case .began:
       turnOffAnimation()
       fallthrough
-    case .Changed:
+    case .changed:
       cellBoardView = cellBoardView.pinch(
         location: gesture.locationInView,
         scale: gesture.scale,
         bounds: imageView.bounds)
       imageView.image = nextCellBoardImageFrame
       gesture.scale = 1
-    case .Ended:
+    case .ended:
       gesture.scale = 1
       if animationIsRunning { turnOnAnimation() }
     default: break
     }
   }
 
-  private var nextCellBoardImageFrame: UIImage? {
+  fileprivate var nextCellBoardImageFrame: UIImage? {
     var result = imageView.image
     if timeSinceLastFrame >= Constants.AnimationFrameLength {
       result = cellBoardView.image(cellBoard.livingCells)
-      lastFrameTimeStamp = NSDate.timestamp
+      lastFrameTimeStamp = Date.timestamp
     }
     return result
   }
 
-  func drawNextFrame(_: NSTimer) {
+  func drawNextFrame(_: Timer) {
     cellBoard.next()
     imageView.image = cellBoardView.image(cellBoard.livingCells)
   }
 
-  private func turnOnAnimation() {
+  fileprivate func turnOnAnimation() {
     timer?.invalidate()
-    timer = NSTimer.scheduledTimerWithTimeInterval(Constants.FrameLength,
+    timer = Timer.scheduledTimer(timeInterval: Constants.FrameLength,
                                                    target: self,
                                                    selector: #selector(ViewController.drawNextFrame(_:)),
                                                    userInfo: nil,
                                                    repeats: true)
   }
 
-  private func turnOffAnimation() {
+  fileprivate func turnOffAnimation() {
     timer?.invalidate()
     timer = nil
   }
 }
 
-extension NSDate {
-  private static var timestamp: NSTimeInterval {
-    return NSDate.timeIntervalSinceReferenceDate()
+extension Date {
+  fileprivate static var timestamp: TimeInterval {
+    return Date.timeIntervalSinceReferenceDate
   }
 }
 
 extension UIBarButtonItem {
-  private var toggledTitle: String {
+  fileprivate var toggledTitle: String {
     switch title ?? "" {
     case Constants.ButtonStartTitle: return Constants.ButtonStopTitle
     case Constants.ButtonStopTitle: return Constants.ButtonStartTitle
@@ -148,7 +148,7 @@ extension UIBarButtonItem {
 }
 
 extension UIGestureRecognizer {
-  private var locationInView: CGPoint {
-    return locationInView(view)
+  fileprivate var locationInView: CGPoint {
+    return location(in: view)
   }
 }
