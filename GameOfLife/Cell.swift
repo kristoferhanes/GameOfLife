@@ -8,14 +8,4 @@
 
 import Foundation
 
-struct Cell { let x: Int, y: Int }
-
-extension Cell: Hashable {
-  var hashValue: Int {
-    return (x << 16) ^ y
-  }
-}
-
-func == (lhs: Cell, rhs: Cell) -> Bool {
-  return lhs.x == rhs.x && lhs.y == rhs.y
-}
+struct Cell: Hashable { let x: Int, y: Int }

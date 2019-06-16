@@ -68,15 +68,13 @@ extension Cell {
 
 extension CGPoint {
   init(cell: Cell) {
-    x = CGFloat(cell.x)
-    y = CGFloat(cell.y)
+    self.init(x: CGFloat(cell.x), y: CGFloat(cell.y))
   }
 }
 
 extension CGSize {
   init(size: CGFloat) {
-    width = size
-    height = size
+    self.init(width: size, height: size)
   }
 }
 
